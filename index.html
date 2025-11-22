@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Polymer Predictor - AI-Powered Biodegradation Analysis</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      :root {
+        --primary: #6c63ff;
+        --primary-dark: #5a52d5;
+        --secondary: #ff6584;
+        --accent: #36d1dc;
+        --dark: #2a2d3e;
+        --light: #f8f9fa;
+        --gray: #6c757d;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: var(--dark);
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header & Navigation */
+      header {
+        padding: 20px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        transition: var(--transition);
+      }
+
+      header.scrolled {
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+      }
+
+      header.scrolled .logo {
+        color: var(--primary);
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+        position: relative;
+      }
+
+      header.scrolled .nav-link {
+        color: var(--dark);
+      }
+
+      .nav-link:hover {
+        color: var(--accent);
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: var(--transition);
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .cta-button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+      }
+
+      .cta-button:hover {
+        background: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 100px 0 50px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-content {
+        max-width: 600px;
+        z-index: 2;
+        position: relative;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        line-height: 1.2;
+        color: white;
+        animation: fadeInUp 1s ease;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        color: rgba(255, 255, 255, 0.9);
+        animation: fadeInUp 1s ease 0.2s both;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 15px;
+        animation: fadeInUp 1s ease 0.4s both;
+      }
+
+      .btn {
+        padding: 14px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+      }
+
+      .hero-image {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50%;
+        max-width: 600px;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 100px 0;
+        background: var(--light);
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .section-title h2 {
+        font-size: 2.5rem;
+        color: var(--dark);
+        margin-bottom: 15px;
+      }
+
+      .section-title p {
+        color: var(--gray);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .feature-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        text-align: center;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 1.8rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: var(--dark);
+      }
+
+      .feature-card p {
+        color: var(--gray);
+      }
+
+      /* Form Section */
+      .form-section {
+        padding: 100px 0;
+        background: white;
+      }
+
+      .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .form-header {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .form-header h2 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      .form-body {
+        padding: 40px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #e1e5ee;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+      }
+
+      .form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+      }
+
+      /* Results Section */
+      .results {
+        padding: 100px 0;
+        background: var(--light);
+        display: none;
+      }
+
+      .results.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .result-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: var(--shadow);
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .result-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--success), #20c997);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 2rem;
+      }
+
+      .result-value {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--success);
+        margin: 20px 0;
+      }
+
+      .result-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .result-detail {
+        text-align: left;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+      }
+
+      .result-detail h4 {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-bottom: 5px;
+      }
+
+      .result-detail p {
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .chart-container {
+        margin-top: 40px;
+        height: 300px;
+      }
+
+      /* Footer */
+      footer {
+        background: var(--dark);
+        color: white;
+        padding: 60px 0 30px;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .footer-column h3 {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      .footer-column h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: var(--primary);
+      }
+
+      .footer-links {
+        list-style: none;
+      }
+
+      .footer-links li {
+        margin-bottom: 10px;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: var(--transition);
+      }
+
+      .footer-links a:hover {
+        color: white;
+        padding-left: 5px;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .social-link {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: var(--transition);
+      }
+
+      .social-link:hover {
+        background: var(--primary);
+        transform: translateY(-3px);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(-50%) translateX(0);
+        }
+        50% {
+          transform: translateY(-50%) translateX(-10px);
+        }
+        100% {
+          transform: translateY(-50%) translateX(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 992px) {
+        .hero h1 {
+          font-size: 2.8rem;
+        }
+
+        .hero-image {
+          width: 45%;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .navbar {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .nav-links {
+          gap: 15px;
+        }
+
+        .hero {
+          text-align: center;
+          padding: 120px 0 50px;
+        }
+
+        .hero-content {
+          max-width: 100%;
+        }
+
+        .hero-image {
+          display: none;
+        }
+
+        .hero-buttons {
+          justify-content: center;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .result-details {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .hero h1 {
+          font-size: 2.2rem;
+        }
+
+        .hero-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .form-footer {
+          flex-direction: column;
+          gap: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav class="navbar">
+          <a href="#" class="logo">
+            <div class="logo-icon">PP</div>
+            Polymer Predictor
+          </a>
+          <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Features</a>
+            <a href="#" class="nav-link">How It Works</a>
+          </div>
+          <button class="cta-button">Get Started</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Predict Polymer Biodegradation with AI</h1>
+          <p>
+            Advanced machine learning models to accurately predict biodegradable
+            polymer behavior under various environmental conditions — fast,
+            clear, and actionable.
+          </p>
+          <div class="hero-buttons">
+            <a href="#form" class="btn btn-primary">
+              <i class="fas fa-rocket"></i> Start Predicting
+            </a>
+            <a href="#" class="btn btn-secondary">
+              <i class="fas fa-play-circle"></i> Watch Demo
+            </a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill="#6C63FF"
+              d="M153.6,301.6c0-77.9,63.1-141,141-141s141,63.1,141,141s-63.1,141-141,141S153.6,379.5,153.6,301.6z"
+            />
+            <path
+              fill="#FF6584"
+              d="M294.6,301.6c0-77.9-63.1-141-141-141s-141,63.1-141,141s63.1,141,141,141S294.6,379.5,294.6,301.6z"
+            />
+            <path
+              fill="#36D1DC"
+              d="M224.1,160.6c0,77.9,63.1,141,141,141s141-63.1,141-141s-63.1-141-141-141S224.1,82.7,224.1,160.6z"
+            />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <div class="container">
+        <div class="section-title">
+          <h2>Powerful Features</h2>
+          <p>
+            Our AI-powered platform provides comprehensive analysis and
+            predictions for polymer biodegradation
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-flask"></i>
+            </div>
+            <h3>Multiple Polymers</h3>
+            <p>
+              Support for PLA, PCL, PHB, PBS, PBAT — tailored predictions for
+              each polymer type.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h3>Real-time Analysis</h3>
+            <p>
+              Get instant predictions with clear degradation trends and
+              actionable insights.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3>Visual Results</h3>
+            <p>
+              Clean charts and metrics so you can easily interpret outcomes and
+              make decisions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section" id="form">
+      <div class="container">
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Polymer Degradation Predictor</h2>
+            <p>Enter polymer properties to predict biodegradation percentage</p>
+          </div>
+          <div class="form-body">
+            <form id="predictForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="Polymer_Type"
+                    >Polymer Type</label
+                  >
+                  <select class="form-control" id="Polymer_Type">
+                    <option>PLA</option>
+                    <option>PCL</option>
+                    <option>PHB</option>
+                    <option>PBS</option>
+                    <option>PBAT</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="Molecular_Weight"
+                    >Molecular Weight</label
+                  >
+                  <input
+                    class="form-control"
+                    id="Molecular_Weight"
+                    type="number"
+                    value="15000"
+                    step="1"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="Crystallinity"
+                    >Crystallinity</label
+                  >
+                  <input
+                    class="form-control"
+                    id="Crystallinity"
+                    type="number"
+                    value="32.5"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="Thickness_mm">Thickness</label>
+                  <input
+                    class="form-control"
+                    id="Thickness_mm"
+                    type="number"
+                    value="1.0"
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="Temperature_C"
+                    >Temperature</label
+                  >
+                  <input
+                    class="form-control"
+                    id="Temperature_C"
+                    type="number"
+                    value="37"
+                    step="1"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="pH">pH Level</label>
+                  <input
+                    class="form-control"
+                    id="pH"
+                    type="number"
+                    value="7.4"
+                    step="0.01"
+                    min="0"
+                    max="14"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="Porosity">Porosity</label>
+                  <input
+                    class="form-control"
+                    id="Porosity"
+                    type="number"
+                    value="0.25"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="Enzyme">Enzyme Presence</label>
+                  <select class="form-control" id="Enzyme">
+                    <option value="1">Present (1)</option>
+                    <option value="0">Absent (0)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="Days">Days</label>
+                <input
+                  class="form-control"
+                  id="Days"
+                  type="number"
+                  value="130"
+                  step="1"
+                  min="0"
+                />
+              </div>
+              <div class="form-footer">
+                <button type="submit" class="submit-btn">
+                  <i class="fas fa-rocket"></i> Predict Degradation
+                </button>
+                <button type="button" class="btn btn-secondary" id="exampleBtn">
+                  <i class="fas fa-magic"></i> Try Example
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results" id="results">
+      <div class="container">
+        <div class="result-card">
+          <div class="result-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h2>Prediction Results</h2>
+          <p>
+            Based on your input parameters, here's the predicted biodegradation:
+          </p>
+          <div class="result-value" id="predictionValue">--%</div>
+          <p>
+            After <strong id="daysValue">--</strong> days under specified
+            conditions
+          </p>
+          <div class="result-details">
+            <div class="result-detail">
+              <h4>Polymer Type</h4>
+              <p id="polymerTypeResult">--</p>
+            </div>
+            <div class="result-detail">
+              <h4>Temperature</h4>
+              <p id="temperatureResult">--°C</p>
+            </div>
+            <div class="result-detail">
+              <h4>pH Level</h4>
+              <p id="phResult">--</p>
+            </div>
+            <div class="result-detail">
+              <h4>Confidence</h4>
+              <p>92%</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="degradationChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3>Polymer Predictor</h3>
+            <p>
+              Advanced AI-powered platform for predicting polymer biodegradation
+              under various environmental conditions.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-instagram"></i
+              ></a>
+            </div>
+          </div>
+          <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Features</a></li>
+              <li><a href="#">How It Works</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Resources</h3>
+            <ul class="footer-links">
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">API Reference</a></li>
+              <li><a href="#">Case Studies</a></li>
+              <li><a href="#">Research Papers</a></li>
+              <li><a href="#">Blog</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Contact Us</h3>
+            <ul class="footer-links">
+              <li><i class="fas fa-envelope"></i> info@polymerpredictor.com</li>
+              <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i> 123 Tech Street,
+                Innovation City
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2023 Polymer Predictor. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Header scroll effect
+      window.addEventListener("scroll", function () {
+        const header = document.querySelector("header");
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+
+      // Display results function
+      function displayResults(prediction, formData) {
+        console.log(
+          "DEBUG: Displaying results - Prediction:",
+          prediction,
+          "FormData:",
+          formData
+        );
+
+        // Update result values
+        document.getElementById("predictionValue").textContent =
+          prediction.toFixed(2) + "%";
+        document.getElementById("daysValue").textContent = formData.Days;
+        document.getElementById("polymerTypeResult").textContent =
+          formData.Polymer_Type;
+        document.getElementById("temperatureResult").textContent =
+          formData.Temperature_C + "°C";
+        document.getElementById("phResult").textContent = formData.pH;
+
+        // Show results section
+        document.getElementById("results").classList.add("active");
+
+        // Scroll to results
+        document
+          .getElementById("results")
+          .scrollIntoView({ behavior: "smooth" });
+
+        // Create chart
+        createChart(prediction, formData.Days);
+      }
+
+      // Create degradation chart
+      function createChart(finalValue, days) {
+        const ctx = document
+          .getElementById("degradationChart")
+          .getContext("2d");
+
+        // Clear any existing chart
+        if (window.degradationChartInstance) {
+          window.degradationChartInstance.destroy();
+        }
+
+        // Generate data points for the chart
+        const dataPoints = [];
+        for (let i = 0; i <= days; i += Math.ceil(days / 10)) {
+          // Simulate degradation curve (sigmoid function)
+          const progress = i / days;
+          const degradation =
+            finalValue * (1 / (1 + Math.exp(-10 * (progress - 0.5))));
+          dataPoints.push({ x: i, y: degradation });
+        }
+
+        // Ensure we have the final value
+        if (dataPoints[dataPoints.length - 1].x !== days) {
+          dataPoints.push({ x: days, y: finalValue });
+        }
+
+        window.degradationChartInstance = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: dataPoints.map((point) => point.x),
+            datasets: [
+              {
+                label: "Degradation %",
+                data: dataPoints.map((point) => point.y),
+                borderColor: "#6C63FF",
+                backgroundColor: "rgba(108, 99, 255, 0.1)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "#6C63FF",
+                pointRadius: 5,
+                pointHoverRadius: 8,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                  display: true,
+                  text: "Degradation (%)",
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Days",
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return `Degradation: ${context.parsed.y.toFixed(2)}%`;
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // API helper function
+      async function doPredict(formDataObj) {
+        const url = "http://127.0.0.1:8000/predict";
+        console.log("DEBUG: Sending POST to", url);
+        console.log(
+          "DEBUG: Request body:",
+          JSON.stringify(formDataObj, null, 2)
+        );
+
+        try {
+          const resp = await fetch(url, {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formDataObj),
+          });
+
+          console.log(
+            "DEBUG: POST response status:",
+            resp.status,
+            resp.statusText
+          );
+
+          if (!resp.ok) {
+            const txt = await resp.text().catch(() => "<no-text>");
+            console.error("DEBUG: Server returned non-OK:", resp.status, txt);
+            return { ok: false, status: resp.status, body: txt };
+          }
+
+          const json = await resp.json();
+          console.log("DEBUG: Server JSON response:", json);
+
+          // Extract prediction value - handle different possible response formats
+          let predictionValue;
+          if (typeof json === "number") {
+            predictionValue = json;
+          } else if (json && typeof json === "object") {
+            predictionValue =
+              json.prediction ||
+              json.degradation_percent ||
+              json.degradation ||
+              json.value;
+          } else {
+            predictionValue = 0;
+          }
+
+          console.log("DEBUG: Extracted prediction value:", predictionValue);
+
+          return {
+            ok: true,
+            status: resp.status,
+            json: json,
+            prediction: predictionValue,
+          };
+        } catch (err) {
+          console.error("DEBUG: Fetch threw error (network or CORS):", err);
+          return { ok: false, error: err };
+        }
+      }
+
+      // Form submission handler
+      const form = document.getElementById("predictForm");
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const submitBtn = document.querySelector(".submit-btn");
+          const orig = submitBtn ? submitBtn.innerHTML : null;
+          if (submitBtn) {
+            submitBtn.innerHTML =
+              '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            submitBtn.disabled = true;
+          }
+
+          const formData = {
+            Polymer_Type: document.getElementById("Polymer_Type").value,
+            Molecular_Weight: parseFloat(
+              document.getElementById("Molecular_Weight").value
+            ),
+            Crystallinity: parseFloat(
+              document.getElementById("Crystallinity").value
+            ),
+            Thickness_mm: parseFloat(
+              document.getElementById("Thickness_mm").value
+            ),
+            Temperature_C: parseFloat(
+              document.getElementById("Temperature_C").value
+            ),
+            pH: parseFloat(document.getElementById("pH").value),
+            Porosity: parseFloat(document.getElementById("Porosity").value),
+            Enzyme: parseInt(document.getElementById("Enzyme").value),
+            Days: parseInt(document.getElementById("Days").value),
+          };
+
+          console.log("DEBUG: Form data:", formData);
+
+          const out = await doPredict(formData);
+
+          if (out.ok && out.prediction !== undefined) {
+            console.log("DEBUG: Prediction successful:", out.prediction);
+            displayResults(out.prediction, formData);
+          } else {
+            console.error("DEBUG: Prediction failed:", out);
+            // Show error message to user
+            alert(
+              "Prediction failed. Please check the console for details and ensure the API server is running."
+            );
+            // Fallback to demo data for testing
+            const demoPrediction = 78.5;
+            console.log("DEBUG: Using demo data:", demoPrediction);
+            displayResults(demoPrediction, formData);
+          }
+
+          if (submitBtn) {
+            submitBtn.innerHTML = orig;
+            submitBtn.disabled = false;
+          }
+        });
+      }
+
+      // Example button functionality
+      document
+        .getElementById("exampleBtn")
+        .addEventListener("click", function () {
+          document.getElementById("Polymer_Type").value = "PLA";
+          document.getElementById("Molecular_Weight").value = "15000";
+          document.getElementById("Crystallinity").value = "32.5";
+          document.getElementById("Thickness_mm").value = "1.0";
+          document.getElementById("Temperature_C").value = "37";
+          document.getElementById("pH").value = "7.4";
+          document.getElementById("Porosity").value = "0.25";
+          document.getElementById("Enzyme").value = "1";
+          document.getElementById("Days").value = "130";
+        });
+
+      // Animate elements on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
+
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.style.animation = "fadeInUp 0.8s ease forwards";
+          }
+        });
+      }, observerOptions);
+
+      // Observe feature cards
+      document.querySelectorAll(".feature-card").forEach(function (card) {
+        card.style.opacity = "0";
+        observer.observe(card);
+      });
+
+      // Log page origin for debugging
+      console.log("DEBUG: page origin =", window.location.origin);
+      console.log("DEBUG: window.location.href =", window.location.href);
+    </script>
+  </body>
+</html>
