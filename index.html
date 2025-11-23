@@ -17,8 +17,6 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
 
-
-      
       :root {
         --primary: #6c63ff;
         --primary-dark: #5a52d5;
@@ -1116,10 +1114,11 @@
 
       // API helper function
       async function doPredict(formDataObj) {
-        const url = "http://3.236.79.130/predict";
+        const url = "/api/predict";
         console.log("DEBUG: Sending POST to", url);
         console.log(
           "DEBUG: Request body:",
+
           JSON.stringify(formDataObj, null, 2)
         );
 
